@@ -12,7 +12,7 @@ Services, Repository, RestFull, Testes Unitários e Docker.
 
 3. Instalar as dependências:
  ```
-docker-compose exec phpfpm composer install
+docker-compose exec phpfpm composer update
 docker-compose exec phpfpm php artisan key:generate
  ```
 4. Permissoes de pastas
