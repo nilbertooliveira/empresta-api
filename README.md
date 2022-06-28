@@ -14,6 +14,7 @@ Services, Repository, RestFull e Docker.
  ```
 docker-compose exec phpfpm composer install
 docker-compose exec phpfpm php artisan key:generate
+ ```
 
 4. Permissoes de pastas
 `sudo chmod -R 777 storage/ bootstrap/`
