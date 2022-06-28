@@ -24,4 +24,4 @@ docker-compose exec phpfpm php artisan key:generate
 
 ## Utilização das APIS
 
-[Documentação Postman](https://documenter.getpostman.com/view/10569259/TWDcGadV)
+[Documentação Postman]([https://documenter.getpostman.com/view/10569259/TWDcGadV](https://documenter.getpostman.com/view/10569259/UzBtnira))
