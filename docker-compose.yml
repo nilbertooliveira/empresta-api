@@ -1,95 +1,278 @@
-# For more information: https://laravel.com/docs/sail
-version: '3'
+version: '3.9'
 services:
-    laravel.test:
-        build:
-            context: ./vendor/laravel/sail/runtimes/8.1
-            dockerfile: Dockerfile
-            args:
-                WWWGROUP: '${WWWGROUP}'
-        image: sail-8.1/app
-        extra_hosts:
-            - 'host.docker.internal:host-gateway'
-        ports:
-            - '${APP_PORT:-80}:80'
-        environment:
-            WWWUSER: '${WWWUSER}'
-            LARAVEL_SAIL: 1
-            XDEBUG_MODE: '${SAIL_XDEBUG_MODE:-off}'
-            XDEBUG_CONFIG: '${SAIL_XDEBUG_CONFIG:-client_host=host.docker.internal}'
-        volumes:
-            - '.:/var/www/html'
-        networks:
-            - sail
-        depends_on:
-            - mysql
-            - redis
-            - meilisearch
-            - selenium
-    mysql:
-        image: 'mysql/mysql-server:8.0'
-        ports:
-            - '${FORWARD_DB_PORT:-3306}:3306'
-        environment:
-            MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
-            MYSQL_ROOT_HOST: "%"
-            MYSQL_DATABASE: '${DB_DATABASE}'
-            MYSQL_USER: '${DB_USERNAME}'
-            MYSQL_PASSWORD: '${DB_PASSWORD}'
-            MYSQL_ALLOW_EMPTY_PASSWORD: 1
-        volumes:
-            - 'sail-mysql:/var/lib/mysql'
-            - './vendor/laravel/sail/database/mysql/create-testing-database.sh:/docker-entrypoint-initdb.d/10-create-testing-database.sh'
-        networks:
-            - sail
-        healthcheck:
-            test: ["CMD", "mysqladmin", "ping", "-p${DB_PASSWORD}"]
-            retries: 3
-            timeout: 5s
-    redis:
-        image: 'redis:alpine'
-        ports:
-            - '${FORWARD_REDIS_PORT:-6379}:6379'
-        volumes:
-            - 'sail-redis:/data'
-        networks:
-            - sail
-        healthcheck:
-            test: ["CMD", "redis-cli", "ping"]
-            retries: 3
-            timeout: 5s
-    meilisearch:
-        image: 'getmeili/meilisearch:latest'
-        ports:
-            - '${FORWARD_MEILISEARCH_PORT:-7700}:7700'
-        volumes:
-            - 'sail-meilisearch:/meili_data'
-        networks:
-            - sail
-        healthcheck:
-            test: ["CMD", "wget", "--no-verbose", "--spider",  "http://localhost:7700/health"]
-            retries: 3
-            timeout: 5s
-    mailhog:
-        image: 'mailhog/mailhog:latest'
-        ports:
-            - '${FORWARD_MAILHOG_PORT:-1025}:1025'
-            - '${FORWARD_MAILHOG_DASHBOARD_PORT:-8025}:8025'
-        networks:
-            - sail
-    selenium:
-        image: 'selenium/standalone-chrome'
-        volumes:
-            - '/dev/shm:/dev/shm'
-        networks:
-            - sail
+
+  #PHP Service
+  app-empresta:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    extra_hosts:
+      - host.docker.internal:host-gateway
+      - apiempresta.local.com.br:host-gateway
+    image: empresta-app/php:8-fpm
+    container_name: app-empresta
+    restart: unless-stopped
+    tty: true
+    links:
+      - redis-empresta
+    environment:
+      SERVICE_NAME: app-empresta
+      SERVICE_TAGS: dev
+      PHP_IDE_CONFIG: serverName=apiempresta.local.com.br
+    working_dir: /var/www
+    volumes:
+      - ./:/var/www
+      - ./docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
+    networks:
+      app-network:
+        ipv4_address: 172.26.0.2
+
+  #  #PHP Service test
+  #  app-empresta-test:
+  #    command: "./vendor/bin/phpunit --colors=always --verbose --debug --testdox-html --coverage-html"
+  #    image: empresta-app/php:7.4-fpm
+  #    container_name: app-empresta-test
+  #    volumes:
+  #      - ./:/var/www
+  #      - ./docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
+  #    networks:
+  #      app-network:
+  #        ipv4_address: 172.26.0.46
+
+  #Nginx Service
+  webserver-empresta:
+    image: 'bitnami/nginx:latest'
+    container_name: webserver-empresta
+    hostname: webserver-empresta
+    restart: unless-stopped
+    tty: true
+    working_dir: /var/www
+    links:
+      - redis-empresta
+    ports:
+      - "8080:80"
+      - "448:443"
+    environment:
+      - VIRTUAL_HOST=apiempresta.local.com.br
+    volumes:
+      - ./:/var/www
+      - ./docker/nginx/conf.d/app.conf:/opt/bitnami/nginx/conf/server_blocks/server_block.conf
+    networks:
+      app-network:
+        ipv4_address: 172.26.0.3
+
+  #MySQL Service
+  db-empresta:
+    image: 'mysql:latest'
+    container_name: db-empresta
+    command: --default-authentication-plugin=mysql_native_password
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: empresta-api
+      MYSQL_USER: dev
+      MYSQL_ROOT_PASSWORD: "demolay"
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+      MYSQL_DEFAULT_AUTH: 'mysql_native_password'
+    volumes:
+      - dbdata:/var/lib/mysql/
+      - ./docker/mysql/my.cnf:/etc/mysql/my.cnf
+    networks:
+      app-network:
+        ipv4_address: 172.26.0.4
+
+  redis-empresta:
+    image: 'bitnami/redis:latest'
+    container_name: redis-empresta
+    restart: unless-stopped
+    tty: true
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    volumes:
+      - redis-data:/bitnami
+      - ./docker/redis/redis.conf:/opt/bitnami/redis/mounted-etc/overrides.conf
+    networks:
+      app-network:
+        ipv4_address: 172.26.0.5
+    ports:
+      - "6379:6379"
+
+  nginx-proxy:
+    container_name: 'nginx-proxy'
+    image: jwilder/nginx-proxy
+    restart: unless-stopped
+    privileged: true
+    user: 0:0
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - certs:/etc/nginx/certs:ro
+      - ./docker/nginx/nginx-proxy/conf.d:/etc/nginx/conf.d
+      - ./docker/nginx/nginx-proxy/conf.d/vhost.d:/etc/nginx/vhost.d/
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      app-network:
+        ipv4_address: 172.26.0.99
+
+  #  supervisor:
+  #    image: empresta-app/php:7.4-fpm
+  #    container_name: supervisor
+  #    privileged: true
+  #    restart: unless-stopped
+  #    user: 0:0
+  #    networks:
+  #      app-network:
+  #        ipv4_address: 172.26.0.49
+  #    depends_on:
+  #      - app-empresta
+  #      - webserver-empresta
+  #      - nginx-proxy
+  #    command: supervisord
+  #
+  #  phpstan:
+  #    image: phpstan/phpstan:latest
+  #    container_name: phpstan
+  #    privileged: true
+  #    user: 0:0
+  #    volumes:
+  #      - ./:/app
+  #    command: analyze
+  #    networks:
+  #      app-network:
+  #        ipv4_address: 172.26.0.48
+
+  #  phpqa:
+  #    image: jakzal/phpqa:php8-alpine
+  #    container_name: phpqa
+  #    privileged: true
+  #    user: 0:0
+  #    volumes:
+  #      - ./:/project
+  #      - ./tmp-phpqa:/tmp
+  #    networks:
+  #      app-network:
+  #        ipv4_address: 172.26.0.47
+
+  #  elasticsearch:
+  #    image: bitnami/elasticsearch:8.3.3
+  #    container_name: elasticsearch
+  #    restart: unless-stopped
+  #    privileged: true
+  #    user: 0:0
+  #    volumes:
+  #      - esdata:/bitnami/elasticsearch/data
+  #    environment:
+  #      - VIRTUAL_HOST=elasticsearch
+  #    ports:
+  #      - "9200:9200"
+  #    networks:
+  #      app-network:
+  #        ipv4_address: 172.26.0.96
+  #
+  #  kibana:
+  #    image: bitnami/kibana:8.3.3
+  #    container_name: kibana
+  #    restart: unless-stopped
+  #    ports:
+  #      - "5601:5601"
+  #    privileged: true
+  #    user: 0:0
+  #    extra_hosts:
+  #      - elasticsearch:host-gateway
+  #    volumes:
+  #      - kibana:/bitnami/kibana
+  #    environment:
+  #      - KIBANA_ELASTICSEARCH_URL=172.26.0.1
+  #      - KIBANA_ELASTICSEARCH_PORT_NUMBER=9200
+  #    depends_on:
+  #      - elasticsearch
+  #    links:
+  #      - elasticsearch
+  #    networks:
+  #      app-network:
+  #        ipv4_address: 172.26.0.95
+  #
+  #  logstash:
+  #    image: bitnami/logstash:8.3.3
+  #    hostname: logstash
+  #    container_name: logstash
+  #    restart: unless-stopped
+  #    privileged: true
+  #    user: 0:0
+  #    volumes:
+  #      - ./docker/logstash/logstash.conf:/bitnami/logstash/pipeline/logstash.conf
+  #    depends_on:
+  #      - elasticsearch
+  #    links:
+  #      - elasticsearch
+  #    ports:
+  #      - "5044:8080"
+  #    networks:
+  #      app-network:
+  #        ipv4_address: 172.26.0.94
+  #
+  #
+  #  filebeat:
+  #    build: ./docker/filebeat
+  #    container_name: filebeat
+  #    command: "filebeat -e -d *"
+  #    hostname: filebeat
+  #    restart: unless-stopped
+  #    privileged: true
+  #    user: 0:0
+  #    volumes:
+  #      - ./storage/logs:/var/log
+  #    depends_on:
+  #      - logstash
+  #    links:
+  #      - logstash
+  #    networks:
+  #      app-network:
+  #        ipv4_address: 172.26.0.93
+
+
+#  portainer:
+#    container_name: 'portainer'
+#    image: portainer/portainer-ce:latest
+#    restart: unless-stopped
+#    privileged: true
+#    user: 0:0
+#    volumes:
+#      - /var/run/docker.sock:/var/run/docker.sock:ro
+#      - portainer:/data
+#    ports:
+#      - "8000:9000"
+#    networks:
+#      app-network:
+#        ipv4_address: 172.26.0.90
+
+
+
+
+##
+## sudo docker network create --gateway 172.26.0.1 --subnet 172.26.0.0/16 empresta-network
+##
+#Docker Networks
 networks:
-    sail:
-        driver: bridge
+  app-network:
+    external: true
+    driver: bridge
+    name: empresta-network
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.26.0.0/16
+#Volumes
 volumes:
-    sail-mysql:
-        driver: local
-    sail-redis:
-        driver: local
-    sail-meilisearch:
-        driver: local
+  dbdata:
+  redis-data:
+  certs:
+  esdata:
+  kibana:
+  portainer:
+    driver: local
+
