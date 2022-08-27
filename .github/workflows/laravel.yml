@@ -14,7 +14,6 @@ jobs:
         with:
           php-version: '8'
       - name: Execute tests (Unit and Feature tests) via PHPUnit
-        run: vendor/bin/phpunit
 
   laravel-cd:
     name: Continuous Deployment
