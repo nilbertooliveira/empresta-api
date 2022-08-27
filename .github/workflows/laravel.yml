@@ -5,14 +5,47 @@ on:
     branches: [ master ]
 
 jobs:
-  deploy:
+  laravel-cd:
+    name: Continuous Deployment
+    needs: laravel-ci
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Deploy to production
-      uses: appleboy/ssh-action@master
-      with:
-        username: ${{ secrets.SSH_USERNAME }}
-        host: ${{ secrets.SSH_HOST }}
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        script: 'cd /home/admin/${{ secrets.HOST }} && ./server_deploy.sh'
+      - uses: actions/checkout@v2
+        with:
+          ref: master
+
+      - name: Deploy to Server
+        uses: easingthemes/ssh-deploy@v2.2.11
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          REMOTE_HOST: ${{ secrets.SSH_HOST }}
+          REMOTE_USER: ${{ secrets.SSH_USERNAME }}
+          TARGET: ${{ secrets.REMOTE_TARGET }}
+
+      - name: Execute SSH commands
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            echo "Starting deploy"
+            set -e
+            cd ${{ secrets.REMOTE_TARGET }}
+
+            # Enter maintenance mode
+            docker-compose down
+            # Update codebase
+            git fetch origin master
+            git reset --hard origin/master
+
+            # Install dependencies based on lock file
+            docker-compose exec ${APP_NAME} composer install
+
+            # Migrate database
+            docker exec ${APP_NAME} php artisan migrate
+
+            # Exit maintenance mode
+            docker-compose up
+
+            echo "Deploy successfuly"
