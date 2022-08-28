@@ -55,7 +55,7 @@ $@
 
 { # try
     echo "Criando volume docker externo"
-    sudo docker volume create --name=mpresta-dbdata 2>/dev/null
+    sudo docker volume create --name=empresta-dbdata 2>/dev/null
     sudo docker volume create --name=empresta-redis-data 2>/dev/null
     sudo docker volume create --name=empresta-certs 2>/dev/null
     sudo docker volume create --name=empresta-esdata 2>/dev/null
