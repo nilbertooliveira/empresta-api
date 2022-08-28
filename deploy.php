@@ -50,7 +50,13 @@ host('prod') // Name of the server
 ->set('http_user', 'admin')
 ->set('writable_use_sudo', false)
 ->set('writable_mode', 'chmod')
-->set('composer_action', 'update');
+->set('composer_action', 'update')
+->set('rsync_excludes', [
+    '.git',
+    'deploy.php',
+    '/node_modules/',
+    '.github'
+]);
 
 after('deploy:failed', 'deploy:unlock');  // Unlock after failed deploy
 
@@ -65,7 +71,7 @@ task('deploy', [
     'deploy:prepare',
     'rsync',                // Deploy code & built assets
     'deploy:secrets',       // Deploy secrets
-    'deploy:vendors',
+    #'deploy:vendors',
     'deploy:shared',        //
     'deploy:publish',       //
 ]);

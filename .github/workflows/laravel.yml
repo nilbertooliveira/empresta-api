@@ -61,7 +61,7 @@ jobs:
           php-version: '8.0'
           extensions: mbstring, bcmath
 
-      - name: Composer install
+      - name: Composer update
         run: composer update -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
 
       - name: Execute tests (Unit and Feature tests) via PHPUnit
