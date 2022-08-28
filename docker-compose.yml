@@ -73,6 +73,7 @@ services:
     environment:
       MYSQL_DATABASE: empresta-api
       MYSQL_USER: dev
+      MYSQL_PASSWORD: demolay
       MYSQL_ROOT_PASSWORD: "demolay"
       SERVICE_TAGS: dev
       SERVICE_NAME: mysql
