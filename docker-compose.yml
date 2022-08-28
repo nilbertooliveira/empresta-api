@@ -275,4 +275,7 @@ volumes:
   kibana:
   portainer:
     driver: local
+    external: true
+    name: empresta
+
 
