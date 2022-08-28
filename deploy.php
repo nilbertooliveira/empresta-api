@@ -63,8 +63,8 @@ task('deploy', [
     'deploy:prepare',
     'rsync',                // Deploy code & built assets
     'deploy:secrets',       // Deploy secrets
-//    'deploy:vendors',
-//    'deploy:shared',        //
+    'deploy:vendors',
+    'deploy:shared',        //
 //    'artisan:storage:link', //
 //    'artisan:view:cache',   //
 //    'artisan:config:cache', // Laravel specific steps
