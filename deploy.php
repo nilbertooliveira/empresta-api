@@ -67,7 +67,7 @@ task('deploy', [
     'deploy:secrets',       // Deploy secrets
     'deploy:vendors',
     'deploy:shared',        //
-    'cleanup',
+    'deploy:cleanup',
     'deploy:publish',       //
 ]);
 
