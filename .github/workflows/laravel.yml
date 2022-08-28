@@ -122,12 +122,12 @@ jobs:
 
             # Enter maintenance mode
             docker-compose down
-            # Update codebase
-            git fetch origin master
-            git reset --hard origin/master
-
-            # Install dependencies based on lock file
-            docker-compose exec ${APP_NAME} composer install
+#            # Update codebase
+#            git fetch origin master
+#            git reset --hard origin/master
+#
+#            # Install dependencies based on lock file
+#            docker-compose exec ${APP_NAME} composer install
 
             # Migrate database
             docker exec ${APP_NAME} php artisan migrate

@@ -61,13 +61,13 @@ task('deploy', [
     'rsync',                // Deploy code & built assets
     'deploy:secrets',       // Deploy secrets
     'deploy:vendors',
-    'deploy:shared',        //
-    'artisan:storage:link', //
-    'artisan:view:cache',   //
-    'artisan:config:cache', // Laravel specific steps
-    'artisan:migrate',      //
-    'artisan:queue:restart',//
-    'deploy:publish',       //
+//    'deploy:shared',        //
+//    'artisan:storage:link', //
+//    'artisan:view:cache',   //
+//    'artisan:config:cache', // Laravel specific steps
+//    'artisan:migrate',      //
+//    'artisan:queue:restart',//
+//    'deploy:publish',       //
 ]);
 
 desc('End of Deploy the application');
