@@ -274,7 +274,6 @@ volumes:
   esdata:
   kibana:
   portainer:
-    driver: local
     external: true
     name: empresta
 

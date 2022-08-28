@@ -53,4 +53,14 @@ $@
     echo "Rede ja existe, seguindo...."
 }
 
+{ # try
+    echo "Criando volume docker externo"
+    sudo docker volume create --name=empresta-volume 2>/dev/null
+} || { # catch
+    # save log for exception
+    echo "Volume ja existe, seguindo...."
+}
+
 add 127.0.0.1 apiempresta.local.com.br
+
+
