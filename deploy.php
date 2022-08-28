@@ -12,7 +12,7 @@ require 'contrib/rsync.php';
 
 set('application', 'Empresta test');
 set('repository', 'git@github.com:nilbertooliveira/empresta-api.git'); // Git Repository
-set('ssh_multiplexing', true);  // Speed up deployment
+set('ssh_multiplexing', false);  // Speed up deployment
 //set('default_timeout', 1000);
 
 set('rsync_src', function () {
