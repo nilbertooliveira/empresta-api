@@ -98,7 +98,7 @@ jobs:
             docker rm $(docker ps -a -q) 2>/dev/null
 
             # Exit maintenance mode
-            docker-compose up -d
+            docker-compose up
 
             docker exec ${APP_NAME} composer update
 
