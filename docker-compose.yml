@@ -26,10 +26,6 @@ services:
     networks:
       app-network:
         ipv4_address: 172.26.0.2
-    deploy:
-        resources:
-            limits:
-                memory: 50M
 
   #  #PHP Service test
   #  app-empresta-test:
@@ -64,10 +60,6 @@ services:
     networks:
       app-network:
         ipv4_address: 172.26.0.3
-    deploy:
-        resources:
-            limits:
-                memory: 50M
 
   #MySQL Service
 #  db-empresta:
@@ -90,10 +82,6 @@ services:
 #    networks:
 #      app-network:
 #        ipv4_address: 172.26.0.4
-#    deploy:
-#        resources:
-#            limits:
-#                memory: 50M
 
   redis-empresta:
     image: 'bitnami/redis:latest'
@@ -110,10 +98,6 @@ services:
         ipv4_address: 172.26.0.5
     ports:
       - "6379:6379"
-    deploy:
-        resources:
-            limits:
-                memory: 50M
 
   nginx-proxy:
     container_name: 'nginx-proxy'
@@ -132,10 +116,6 @@ services:
     networks:
       app-network:
         ipv4_address: 172.26.0.99
-    deploy:
-        resources:
-            limits:
-                memory: 50M
 
   #  supervisor:
   #    image: empresta-app/php:7.4-fpm
