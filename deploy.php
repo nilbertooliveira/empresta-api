@@ -67,7 +67,7 @@ task('deploy', [
 //    'artisan:config:cache', // Laravel specific steps
 //    'artisan:migrate',      //
 //    'artisan:queue:restart',//
-//    'deploy:publish',       //
+    'deploy:publish',       //
 ]);
 
 desc('End of Deploy the application');
