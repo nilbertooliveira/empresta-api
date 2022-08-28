@@ -93,6 +93,10 @@ jobs:
             # Enter maintenance mode
             docker-compose down
 
+            # Em caso de falha o contexto muda devido a release, forço a parada.
+            docker stop $(docker ps -a -q)
+            docker rm $(docker ps -a -q)
+
             # Exit maintenance mode
             docker-compose up -d
 
