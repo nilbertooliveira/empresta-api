@@ -86,8 +86,6 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             echo "Starting deploy"
-
-            rm -fr empresta-api
             cd ${{ secrets.REMOTE_TARGET }}
             set -e
             APP_NAME=$(grep DOCKER_APP_NAME .env | cut -d '=' -f2)
@@ -97,6 +95,8 @@ jobs:
 
             # Exit maintenance mode
             docker-compose up -d
+
+            docker exec ${APP_NAME} composer update
 
             # Migrate database
             docker exec ${APP_NAME} php artisan migrate
