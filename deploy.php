@@ -49,9 +49,11 @@ host('prod') // Name of the server
 ->set('deploy_path', '/home/admin/projetos')// Deploy path
 ->set('http_user', 'admin')
 ->set('writable_use_sudo', false)
-->set('writable_mode', 'chmod');
+->set('writable_mode', 'chmod')
+->set('composer_action', 'update');
 
 after('deploy:failed', 'deploy:unlock');  // Unlock after failed deploy
+after('deploy', 'deploy:done');
 
 ///////////////////////////////////
 // Tasks
@@ -65,11 +67,7 @@ task('deploy', [
     'deploy:secrets',       // Deploy secrets
     'deploy:vendors',
     'deploy:shared',        //
-//    'artisan:storage:link', //
-//    'artisan:view:cache',   //
-//    'artisan:config:cache', // Laravel specific steps
-//    'artisan:migrate',      //
-//    'artisan:queue:restart',//
+    'cleanup',
     'deploy:publish',       //
 ]);
 
