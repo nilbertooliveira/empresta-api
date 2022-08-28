@@ -269,12 +269,21 @@ networks:
 #Volumes
 volumes:
   dbdata:
+      name: empresta-dbdata
+      external: true
   redis-data:
+      name: empresta-redis-data
+      external: true
   certs:
+      name: empresta-certs
+      external: true
   esdata:
+      name: empresta-esdata
+      external: true
   kibana:
+      name: empresta-kibana
+      external: true
   portainer:
-    external: true
-    name: empresta-volume
-
+      name: empresta-portainer
+      external: true
 
