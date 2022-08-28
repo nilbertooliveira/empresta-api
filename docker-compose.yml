@@ -70,30 +70,30 @@ services:
                 memory: 50M
 
   #MySQL Service
-  db-empresta:
-    image: 'mysql:latest'
-    container_name: db-empresta
-    command: --default-authentication-plugin=mysql_native_password
-    restart: unless-stopped
-    tty: true
-    ports:
-      - "3306:3306"
-    environment:
-      MYSQL_DATABASE: empresta-api
-      MYSQL_USER: dev
-      MYSQL_PASSWORD: demolay
-      MYSQL_ROOT_PASSWORD: "demolay"
-      MYSQL_DEFAULT_AUTH: 'mysql_native_password'
-    volumes:
-      - dbdata:/var/lib/mysql/
-      #- ./docker/mysql/my.cnf:/etc/mysql/my.cnf
-    networks:
-      app-network:
-        ipv4_address: 172.26.0.4
-    deploy:
-        resources:
-            limits:
-                memory: 50M
+#  db-empresta:
+#    image: 'mysql:latest'
+#    container_name: db-empresta
+#    command: --default-authentication-plugin=mysql_native_password
+#    restart: unless-stopped
+#    tty: true
+#    ports:
+#      - "3306:3306"
+#    environment:
+#      MYSQL_DATABASE: empresta-api
+#      MYSQL_USER: dev
+#      MYSQL_PASSWORD: demolay
+#      MYSQL_ROOT_PASSWORD: "demolay"
+#      MYSQL_DEFAULT_AUTH: 'mysql_native_password'
+#    volumes:
+#      - dbdata:/var/lib/mysql/
+#      #- ./docker/mysql/my.cnf:/etc/mysql/my.cnf
+#    networks:
+#      app-network:
+#        ipv4_address: 172.26.0.4
+#    deploy:
+#        resources:
+#            limits:
+#                memory: 50M
 
   redis-empresta:
     image: 'bitnami/redis:latest'
@@ -274,6 +274,7 @@ services:
 
 ##
 ## sudo docker network create --gateway 172.26.0.1 --subnet 172.26.0.0/16 empresta-network
+## ssh-keygen -t rsa -b 4096 -m PEM -C "nilbertooliveira.ti@gmail.com"
 ##
 #Docker Networks
 networks:
