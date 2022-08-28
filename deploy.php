@@ -47,7 +47,10 @@ host('prod') // Name of the server
 ->set('remote_user', 'admin') // SSH user
 ->set('branch', 'master') // Git branch
 ->set('deploy_path', '/home/admin/projetos')// Deploy path
-->set('http_user', 'admin');
+->set('http_user', 'admin')
+->set('writable_use_sudo', false)
+->set('writable_mode', 'chmod');
+;
 
 after('deploy:failed', 'deploy:unlock');  // Unlock after failed deploy
 
