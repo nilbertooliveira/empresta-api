@@ -275,6 +275,6 @@ volumes:
   kibana:
   portainer:
     external: true
-    name: empresta
+    name: empresta-volume
 
 
