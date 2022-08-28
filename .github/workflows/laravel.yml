@@ -90,19 +90,24 @@ jobs:
             set -e
             APP_NAME=$(grep DOCKER_APP_NAME .env | cut -d '=' -f2)
 
-            # Enter maintenance mode
+            echo "Enter maintenance mode"
             docker-compose down
 
-            # Em caso de falha o contexto muda devido a release, forço a parada, caso não exista iguinora o erro
-            docker stop $(docker ps -a -q) 2>/dev/null
-            docker rm $(docker ps -a -q) 2>/dev/null
+            echo "Em caso de falha o contexto muda devido a release, forço a parada, caso não exista iguinora o erro"
+            {
+                docker stop $(docker ps -a -q) 2>/dev/null
+                docker rm $(docker ps -a -q) 2>/dev/null
+            } || {
+              echo "Não existem containers...."
+            }
 
-            # Exit maintenance mode
+            echo "Exit maintenance mode"
             docker-compose up
 
+            echo "Install migrate"
             docker exec ${APP_NAME} composer update
 
-            # Migrate database
+            echo "Migrate database"
             docker exec ${APP_NAME} php artisan migrate
 
             echo "Deploy successfuly"
