@@ -53,7 +53,6 @@ host('prod') // Name of the server
 ->set('composer_action', 'update');
 
 after('deploy:failed', 'deploy:unlock');  // Unlock after failed deploy
-after('deploy', 'deploy:done');
 
 ///////////////////////////////////
 // Tasks
