@@ -47,7 +47,6 @@ host('prod') // Name of the server
 ->set('remote_user', 'ubuntu') // SSH user
 ->set('branch', 'master') // Git branch
 ->set('deploy_path', '/home/ubuntu/projetos')// Deploy path
-->set('http_user', 'ubuntu')
 ->set('writable_use_sudo', false)
 ->set('writable_mode', 'chmod')
 ->set('composer_action', 'update')
@@ -82,7 +81,6 @@ task('deploy', [
     'deploy:prepare',
     'rsync',                // Deploy code & built assets
     'deploy:secrets',       // Deploy secrets
-    #'deploy:vendors',
     'deploy:shared',        //
     'deploy:publish',       //
 ]);
