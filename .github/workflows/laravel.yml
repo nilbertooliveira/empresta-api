@@ -94,7 +94,7 @@ jobs:
             docker-compose down
 
             # Exit maintenance mode
-            docker-compose up
+            docker-compose up -d
 
             # Migrate database
             docker exec ${APP_NAME} php artisan migrate
