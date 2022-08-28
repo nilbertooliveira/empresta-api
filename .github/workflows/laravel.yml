@@ -71,5 +71,4 @@ jobs:
 
             # Exit maintenance mode
             docker-compose up
-
             echo "Deploy successfuly"
