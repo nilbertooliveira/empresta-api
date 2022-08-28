@@ -57,7 +57,16 @@ host('prod') // Name of the server
         'deploy.php',
         '/node_modules/',
         '.github'
-    ]
+    ],
+    'exclude-file' => false,
+    'include'      => [],
+    'include-file' => false,
+    'filter'       => [],
+    'filter-file'  => false,
+    'filter-perdir'=> false,
+    'flags'        => 'rz', // Recursive, with compress
+    'options'      => ['delete'],
+    'timeout'      => 60,
 ]);
 
 after('deploy:failed', 'deploy:unlock');  // Unlock after failed deploy
