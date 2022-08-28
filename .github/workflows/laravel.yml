@@ -86,9 +86,9 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             echo "Starting deploy"
+            cd ${{ secrets.REMOTE_TARGET }}
             set -e
             APP_NAME=$(grep DOCKER_APP_NAME .env | cut -d '=' -f2)
-            cd ${{ secrets.REMOTE_TARGET }}
 
             # Enter maintenance mode
             docker-compose down
