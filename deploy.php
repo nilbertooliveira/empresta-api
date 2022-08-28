@@ -50,7 +50,6 @@ host('prod') // Name of the server
 ->set('http_user', 'admin')
 ->set('writable_use_sudo', false)
 ->set('writable_mode', 'chmod');
-;
 
 after('deploy:failed', 'deploy:unlock');  // Unlock after failed deploy
 
