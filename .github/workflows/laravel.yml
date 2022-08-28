@@ -93,9 +93,9 @@ jobs:
             # Enter maintenance mode
             docker-compose down
 
-            # Em caso de falha o contexto muda devido a release, forço a parada.
-            docker stop $(docker ps -a -q)
-            docker rm $(docker ps -a -q)
+            # Em caso de falha o contexto muda devido a release, forço a parada, caso não exista iguinora o erro
+            docker stop $(docker ps -a -q) 2>/dev/null
+            docker rm $(docker ps -a -q) 2>/dev/null
 
             # Exit maintenance mode
             docker-compose up -d
