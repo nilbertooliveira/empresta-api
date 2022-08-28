@@ -87,13 +87,14 @@ jobs:
           script: |
             echo "Starting deploy"
             set -e
+            APP_NAME=$(grep DOCKER_APP_NAME .env | cut -d '=' -f2)
             cd ${{ secrets.REMOTE_TARGET }}
 
             # Enter maintenance mode
             docker-compose down
 
             # Migrate database
-            docker exec ${DOCKER_APP_NAME} php artisan migrate
+            docker exec ${APP_NAME} php artisan migrate
 
             # Exit maintenance mode
             docker-compose up
