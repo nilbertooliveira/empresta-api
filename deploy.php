@@ -46,7 +46,8 @@ host('prod') // Name of the server
 ->setHostname('184.72.97.231') // Hostname or IP address
 ->set('remote_user', 'admin') // SSH user
 ->set('branch', 'master') // Git branch
-->set('deploy_path', '/home/admin/projetos'); // Deploy path
+->set('deploy_path', '/home/admin/projetos')// Deploy path
+->set('http_user', 'admin');
 
 after('deploy:failed', 'deploy:unlock');  // Unlock after failed deploy
 
