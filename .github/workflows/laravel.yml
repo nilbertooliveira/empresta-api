@@ -59,6 +59,7 @@ jobs:
           name: assets
           path: public
           retention-days: 3
+
   deploy-production:
     name: Deploy Project to Production Server
     runs-on: ubuntu-latest
@@ -77,7 +78,7 @@ jobs:
           php-version: '8.0'
           extension-csv: mbstring, bcmath
       - name: Composer install
-        run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+        run: composer update -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
       - name: Setup Deployer
         uses: atymic/deployer-php-action@master
         with:
