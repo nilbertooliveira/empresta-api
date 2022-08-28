@@ -102,12 +102,12 @@ jobs:
             }
 
             echo "Exit maintenance mode"
-            docker-compose up
+            docker-compose up -d
 
-            echo "Install migrate"
+            echo "Install vendor"
             docker exec ${APP_NAME} composer update
 
-            echo "Migrate database"
-            docker exec ${APP_NAME} php artisan migrate
+#            echo "Migrate database"
+#            docker exec ${APP_NAME} php artisan migrate
 
             echo "Deploy successfuly"
