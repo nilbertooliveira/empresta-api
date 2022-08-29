@@ -50,7 +50,6 @@ jobs:
       - name: Execute tests (Unit and Feature tests) via PHPUnit
         run: php artisan test
 
-
   phpcs:
     name: PHPCS
     runs-on: ubuntu-latest
