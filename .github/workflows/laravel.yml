@@ -32,22 +32,28 @@ jobs:
           path: public
           retention-days: 3
 
+  phpunit:
+    name: PHPUnit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: nathanheffley/laravel-phpunit-action@master
+
   php-cs-fixer:
     name: PHP-CS-Fixer
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: PHP-CS-Fixer
-        uses: docker://oskarstark/php-cs-fixer-ga
+      - name: php-cs-fixer
+        uses: ale94lko/php-cs-fixer-action@v1.0.1
 
   phpinsights:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
 
-      - uses: MilesChou/composer-action@master
-        with:
-          args: update -q --no-ansi --no-interaction --no-scripts --no-suggest --no-progress --prefer-dist
+      - name: Composer update
+        run: composer update -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
 
       - uses: stefanzweifel/laravel-phpinsights-action@v1.1.1
 
