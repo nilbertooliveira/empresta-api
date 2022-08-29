@@ -32,6 +32,15 @@ jobs:
           path: public
           retention-days: 3
 
+
+  php-cs-fixer:
+    name: PHP-CS-Fixer
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: PHP-CS-Fixer
+        uses: docker://oskarstark/php-cs-fixer-ga
+
   deploy-production:
     name: Deploy Project to Production Server
     runs-on: ubuntu-latest
@@ -63,6 +72,11 @@ jobs:
 
       - name: Composer update
         run: composer update -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+
+      - name: phpinsights
+      - uses: stefanzweifel/laravel-phpinsights-action@v1.1.1
+        with:
+          args: -v --min-quality=80 --min-complexity=80 --min-architecture=80 --min-style=80 --disable-security-check
 
       - name: Execute tests (Unit and Feature tests) via PHPUnit
         run: php artisan test
