@@ -66,7 +66,9 @@ host('prod') // Name of the server
     'flags'        => 'rz', // Recursive, with compress
     'options'      => ['delete'],
     'timeout'      => 60,
-]);
+])
+->set('shared_dirs', [])
+->set('shared_files', []);
 
 after('deploy:failed', 'deploy:unlock');  // Unlock after failed deploy
 
@@ -81,7 +83,7 @@ task('deploy', [
     'deploy:prepare',
     'rsync',                // Deploy code & built assets
     'deploy:secrets',       // Deploy secrets
-    //'deploy:shared',        //
+    'deploy:shared',        //
     'deploy:publish',       //
 ]);
 
