@@ -146,4 +146,5 @@ jobs:
             #echo "Migrate database"
             #docker exec ${APP_NAME} php artisan migrate
 
+
             echo "Deploy successfuly"
