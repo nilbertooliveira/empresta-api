@@ -43,7 +43,7 @@ task('deploy:secrets', function () {
 ///////////////////////////////////
 
 host('prod') // Name of the server
-->setHostname('54.83.124.224') // Hostname or IP address
+->setHostname('44.209.229.21') // Hostname or IP address
 ->set('remote_user', 'ubuntu') // SSH user
 ->set('branch', 'master') // Git branch
 ->set('deploy_path', '/home/ubuntu/projetos')// Deploy path
