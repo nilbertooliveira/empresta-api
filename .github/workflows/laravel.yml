@@ -108,6 +108,7 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
           ssh-known-hosts: ${{ secrets.SSH_KNOWN_HOSTS }}
+          ssh-disable-host-key-checking: true
 
       - name: Deploy to Production
         env:
@@ -144,7 +145,7 @@ jobs:
             #docker exec ${APP_NAME} composer update
 
             #echo "Migrate database"
-            #docker exec ${APP_NAME} php artisan migrate
+            docker exec ${APP_NAME} php artisan migrate
 
 
             echo "Deploy successfuly"

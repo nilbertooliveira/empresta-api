@@ -43,10 +43,10 @@ task('deploy:secrets', function () {
 ///////////////////////////////////
 
 host('prod') // Name of the server
-->setHostname('44.209.229.21') // Hostname or IP address
-->set('remote_user', 'ubuntu') // SSH user
+->setHostname('54.225.188.115') // Hostname or IP address
+->set('remote_user', 'ec2-user') // SSH user
 ->set('branch', 'master') // Git branch
-->set('deploy_path', '/home/ubuntu/projetos')// Deploy path
+->set('deploy_path', '/home/ec2-user/projetos')// Deploy path
 ->set('writable_use_sudo', false)
 ->set('writable_mode', 'chmod')
 ->set('composer_action', 'update')
