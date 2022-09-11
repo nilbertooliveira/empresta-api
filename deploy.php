@@ -50,6 +50,7 @@ host('prod') // Name of the server
 ->set('writable_use_sudo', false)
 ->set('writable_mode', 'chmod')
 ->set('composer_action', 'update')
+->set('git_ssh_command', 'ssh')
 ->set('rsync',[
     'exclude'=> [
         '.git',
