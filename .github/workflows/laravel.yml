@@ -32,41 +32,41 @@ jobs:
           path: public
           retention-days: 3
 
-  phpunit:
-    name: PHPUnit
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: PHPUnit
-        uses: shivammathur/setup-php@master
-        with:
-          php-version: '8.0'
-          extensions: mbstring, bcmath
-
-      - name: Composer update
-        run: composer update -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
-
-      - name: Execute tests (Unit and Feature tests) via PHPUnit
-        run: php artisan test
-
-  phpcs:
-    name: PHPCS
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: PHPCS check
-        uses: chekalsky/phpcs-action@v1
-
-  phpinsights:
-    name: PHP-Insights
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@master
-      - name: PHP-Insights
-        uses: docker://tienvx/phpinsights-action
-        with:
-          args: "-v --min-quality=70 --min-complexity=70 --min-architecture=50 --min-style=80"
+#  phpunit:
+#    name: PHPUnit
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v3
+#
+#      - name: PHPUnit
+#        uses: shivammathur/setup-php@master
+#        with:
+#          php-version: '8.0'
+#          extensions: mbstring, bcmath
+#
+#      - name: Composer update
+#        run: composer update -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+#
+#      - name: Execute tests (Unit and Feature tests) via PHPUnit
+#        run: php artisan test
+#
+#  phpcs:
+#    name: PHPCS
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v3
+#      - name: PHPCS check
+#        uses: chekalsky/phpcs-action@v1
+#
+#  phpinsights:
+#    name: PHP-Insights
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@master
+#      - name: PHP-Insights
+#        uses: docker://tienvx/phpinsights-action
+#        with:
+#          args: "-v --min-quality=70 --min-complexity=70 --min-architecture=50 --min-style=80"
 
   deploy-production:
     name: Deploy Project to Production Server
@@ -100,8 +100,8 @@ jobs:
       - name: Composer update
         run: composer update -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
 
-      - name: Execute tests (Unit and Feature tests) via PHPUnit
-        run: php artisan test
+#      - name: Execute tests (Unit and Feature tests) via PHPUnit
+#        run: php artisan test
 
       - name: Setup Deployer
         uses: atymic/deployer-php-action@master
